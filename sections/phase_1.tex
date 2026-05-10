@@ -1,0 +1,42 @@
+\section{Fase 1, Hardware: Detección USB del KrakenSDR}
+
+\textbf{Objetivo:} Confirmar que el sistema operativo reconoce los 5 dispositivos RTL-SDR integrados antes de inicializar cualquier capa de software superior.
+
+% --- TEST 01 ---
+\subsection{T-01, Dispositivos USB Detectados}
+
+Ejecute el siguiente comando para listar los dispositivos conectados al bus USB:
+
+\begin{lstlisting}[language=bash]
+lsusb | grep -i "RTL\|Realtek\|2838"
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=gray!5, colframe=deyposcolor, title=Resultado esperado (T-01)]
+Debe obtener \textbf{exactamente 5 líneas} de salida, todas mostrando el identificador del chip (generalmente RTL2838 o similar).
+\end{tcolorbox}
+
+% --- TEST 02 ---
+\subsection{T-02, Los 5 SDRs Abiertos y Leídos}
+
+Asegúrese de detener el servicio DAQ antes de realizar esta comprobación para liberar los dispositivos. Ejecute la secuencia de comandos de validación:
+
+\begin{lstlisting}[language=bash]
+# Detener daemon si existe y activar entorno
+sudo systemctl stop daq_chain 2>/dev/null || true
+source venv/bin/activate
+python -c "from src.receiv_check import Checker; Checker.CheckReceiver(1621.3e6)"
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=gray!5, colframe=deyposcolor, title=Resultado esperado (T-02)]
+\texttt{Todos los dispositivos detectados \\
+  \textcolor{green!60!black}{$\checkmark$} Dispositivo 0: OK \\
+  \textcolor{green!60!black}{$\checkmark$} Dispositivo 1: OK \\
+  \textcolor{green!60!black}{$\checkmark$} Dispositivo 2: OK \\
+  \textcolor{green!60!black}{$\checkmark$} Dispositivo 3: OK \\
+  \textcolor{green!60!black}{$\checkmark$} Dispositivo 4: OK \\
+\textbf{\textcolor{deyposcolor}{$\checkmark$ Todos los 5 RTL-SDRs están operativos!}}}
+\end{tcolorbox}
+
+\begin{important}
+    \textbf{Nota de mantenimiento:} Si algún dispositivo muestra el estado \textbf{ERROR}, desconecte y vuelva a conectar el cable USB, espere 10 segundos y repita la prueba.
+\end{important}

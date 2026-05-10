@@ -1,0 +1,36 @@
+<svg width="200" height="200" viewBox="12 12 61 75" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+    <mask id="maskS">
+        <rect width="90" height="100" fill="white"/>
+        <!-- mismo cx/cy que la D, radio = 20 + la mitad del stroke + margen -->
+        <circle cx="20" cy="50" r="30" fill="none" stroke="black" stroke-width="6.3"/>
+        <circle cx="50" cy="40" r="22.75" fill="none" stroke="black" stroke-width="0.5"
+        stroke-dasharray="100" stroke-dashoffset="80"/>
+        <circle cx="50" cy="40" r="17.25" fill="none" stroke="black" stroke-width="0.5"
+        stroke-dasharray="100" stroke-dashoffset="80"/>
+    </mask>
+    </defs>
+
+  <!-- Línea vertical de la 'D' -->
+  <line x1="20" x2="20" y1="28" y2="72" stroke="#008A8A" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- Círculo de la izquierda (parte de la D) -->
+  <circle cx="20" cy="50" r="30" stroke="#008a8B" stroke-width="5" fill="none"
+    stroke-dasharray="94.24 94.24" stroke-linecap="round" stroke-dashoffset="47"/>
+
+  <!-- Círculo Superior (La S) -->
+  <circle cx="50" cy="40" r="20" stroke="#008a8A" stroke-width="5" fill="none" 
+    stroke-dasharray="108.7 120.9" stroke-linecap="round" stroke-dashoffset="-2"
+    mask="url(#maskS)"/>
+
+  <!-- Círculo Inferior (La S) -->
+  <circle cx="50" cy="60" r="20" stroke="#008a8A" stroke-width="5" fill="none"
+    stroke-dasharray="104.7 20.9" stroke-linecap="round" stroke-dashoffset="-79"
+    mask="url(#maskS)"/>
+
+    <!-- Diseño del centro -->
+    <circle cx="43" cy="50" r="3" fill="#008A8A"/>
+    <!-- <line x1="73" x2="80" y1="50" y2="56" stroke="#008A8A" stroke-width="4" stroke-linecap="round"/>
+    <line x1="73" x2="80" y1="50" y2="44" stroke="#008A8A" stroke-width="4" stroke-linecap="round"/> -->
+
+</svg>

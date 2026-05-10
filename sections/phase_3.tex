@@ -1,0 +1,44 @@
+\section{Fase 3, Verificación de Señal RF}
+
+\textbf{Objetivo:} Realizar un "Sanity Check" de RF para confirmar la recepción de señal en ambas frecuencias antes de iniciar grabaciones automatizadas. Esta prueba valida la ganancia de los LNAs y la orientación de las antenas.
+
+% --- TEST 04 ---
+\subsection{T-04, Señal visible de Iridium en 1621.3 MHz}
+
+Inicie el monitor de pulsos en el \textbf{CH0} para detectar ráfagas de satélites Iridium NEXT.
+
+\begin{lstlisting}[language=bash]
+source venv/bin/activate
+python src/pulse_monitor.py --freq 1621.5 --samplerate 2.4 --device 0 --gain 49.6
+\end{lstlisting}
+\begin{tcolorbox}[
+    colback=blue!5, 
+    colframe=deyposcolor, 
+    title=Resultado esperado (T-04)
+]
+Debería observar ráfagas de tráfico general de Iridium. El terminal mostrará:
+\vspace{0.2cm}
+\begin{center}
+    \texttt{\textcolor{red}{$\bullet$} \textbf{PULSO \#1 DETECTADO!}} \\
+    \texttt{Potencia: -78.3 dB} \\
+    \texttt{Delta: +8.4 dB sobre baseline} \\
+    \texttt{Timestamp: 14:23:07.412}
+\end{center}
+\end{tcolorbox}
+
+\begin{important}
+    \textbf{Nota sobre Iridium:} Las pasadas de satélites son frecuentes. Si tras 30 minutos no hay detecciones, verifique la alimentación del LNA y que no existan obstáculos físicos en la línea de visión al cielo.
+\end{important}
+
+% --- TEST 05 ---
+\subsection{T-05, Señal visible de Inmarsat en 1641.5 MHz}
+
+Inicie el monitor en el \textbf{CH2}. Al ser satélites geoestacionarios, la señal debe ser más constante una vez que la antena está apuntada.
+
+\begin{lstlisting}[language=bash]
+python src/pulse_monitor.py --freq 1641.5 --samplerate 2.4 --device 2 --gain 49.6
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=blue!5, colframe=deyposcolor, title=Resultado esperado (T-05)]
+Detección de pulsos regulares o un nivel de ruido base (\textit{baseline}) claramente elevado de forma constante en el Canal 2.
+\end{tcolorbox}

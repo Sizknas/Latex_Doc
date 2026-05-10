@@ -1,0 +1,104 @@
+\section{Fase 4, Grabador: Ejecución Manual y Detección}
+
+\textbf{Objetivo:} Confirmar que el grabador se inicializa correctamente, establece el umbral de ruido (*baseline*) de forma dinámica y genera los archivos de evento tras la detección.
+
+\subsection{T-06, Grabador: Inicialización y Calibración}
+
+Ejecute el script principal del sistema para iniciar el proceso de calibración automática:
+
+\begin{lstlisting}[language=bash]
+source venv/bin/activate
+python main.py
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=gray!5, colframe=deyposcolor, title=Resultado esperado (T-06)]
+El sistema debe completar la calibración en menos de 15 segundos:
+\vspace{0.2cm}
+\begin{center}
+    \texttt{============================================================} \\
+    \texttt{Calibrating noise floor...} \\
+    \texttt{\quad \textcolor{green!60!black}{$\checkmark$} [Iridium] \ baseline=-92.3 dB \ threshold=-80.3 dB} \\
+    \texttt{\quad \textcolor{green!60!black}{$\checkmark$} [Inmarsat] baseline=-95.1 dB \ threshold=-83.1 dB} \\
+    \texttt{\textbullet \ Monitoring... (Ctrl+C to stop)} \\
+    \texttt{============================================================}
+\end{center}
+\end{tcolorbox}
+
+\vspace{0.4cm}
+\textbf{Registro de valores de calibración (A completar por el técnico):}
+
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{2} % Espacio extra para escribir a mano
+    \begin{tabularx}{0.8\textwidth}{|l|X|X|}
+        \hline
+        \rowcolor{deyposcolor} 
+        \textbf{\textcolor{white}{Grupo}} & \textbf{\textcolor{white}{Baseline (dB)}} & \textbf{\textcolor{white}{Threshold (dB)}} \\ \hline
+        Iridium  & & \\ \hline
+        Inmarsat & & \\ \hline
+    \end{tabularx}
+\end{table}
+
+\begin{important}
+    \textbf{Troubleshooting:} Si el valor de baseline aparece como \textit{"not yet ready"}, significa que uno de los dispositivos RTL-SDR no se ha inicializado correctamente. Detenga el proceso con \texttt{Ctrl+C} y repita el test \textbf{T-02}.
+\end{important}
+
+% --- TEST 07 ---
+\subsection{T-07, Transmisión de boya Iridium detectada y guardada}
+
+Con el grabador activo desde T-06, espere a que la boya Iridium transmita, o aproxime la boya a menos de 2 metros de las antenas CH0/CH1 para garantizar una señal robusta.
+
+\begin{tcolorbox}[colback=gray!5, colframe=deyposcolor, title=Resultado esperado (T-07)]
+Al producirse la transmisión, el terminal mostrará:
+\vspace{0.2cm}
+\begin{center}
+    \texttt{\textcolor{orange!80!black}{$\bullet$} [Iridium] EVENT \ power=-74.1 dB \ baseline=-92.3 dB} \\
+    \texttt{\quad \textcolor{green!60!black}{$\checkmark$} event\_Iridium\_20260509\_143022\_001234\_ch0.iq} \\
+    \texttt{\quad \textcolor{green!60!black}{$\checkmark$} event\_Iridium\_20260509\_143022\_001234\_ch1.iq}
+\end{center}
+\end{tcolorbox}
+
+Verifique que los archivos existen con el tamaño correcto:
+
+\begin{lstlisting}[language=bash]
+ls -lh /home/kraken/Signal-Recorder/events/event_Iridium_*.iq
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=gray!5, colframe=deyposcolor, title=Verificación de archivos (T-07)]
+Se deben generar \textbf{2 archivos} \texttt{.iq}, cada uno de entre \textbf{60 y 80~MB} (3\,s pre-evento + 3\,s post-evento a 1,5\,MHz, 2 canales).
+\end{tcolorbox}
+
+% --- TEST 08 ---
+\subsection{T-08, Transmisión de boya Inmarsat detectada y guardada}
+
+Procedimiento idéntico a T-07 pero para la boya Inmarsat. Si es necesario, aproxime la boya a las antenas CH2/CH3.
+
+\begin{tcolorbox}[colback=gray!5, colframe=deyposcolor, title=Resultado esperado (T-08)]
+Misma salida que T-07 con la etiqueta \texttt{[Inmarsat]} y dos archivos generados para los canales CH2 y CH3:
+\vspace{0.2cm}
+\begin{center}
+    \texttt{\textcolor{orange!80!black}{$\bullet$} [Inmarsat] EVENT \ power=-71.8 dB \ baseline=-95.1 dB} \\
+    \texttt{\quad \textcolor{green!60!black}{$\checkmark$} event\_Inmarsat\_XXXXXXXX\_XXXXXX\_XXXXXX\_ch2.iq} \\
+    \texttt{\quad \textcolor{green!60!black}{$\checkmark$} event\_Inmarsat\_XXXXXXXX\_XXXXXX\_XXXXXX\_ch3.iq}
+\end{center}
+\end{tcolorbox}
+
+% --- TEST 09 ---
+\subsection{T-09, Cooldown de 10 segundos respetado}
+
+Esta prueba valida que el sistema no genere eventos en ráfaga durante el período de enfriamiento post-detección.
+
+\textbf{Procedimiento:} Monitorice la salida del grabador durante T-07 y T-08. Tras cada evento \texttt{[Iridium]} o \texttt{[Inmarsat]}, confirme que no aparece ningún evento adicional del mismo grupo durante al menos 10 segundos.
+
+\begin{tcolorbox}[colback=gray!5, colframe=deyposcolor, title=Resultado esperado (T-09)]
+Tiempo mínimo entre eventos consecutivos del mismo grupo: \textbf{10 segundos}. Cualquier evento del mismo grupo dentro de esa ventana constituye un fallo en esta prueba.
+\end{tcolorbox}
+
+% --- TEST 10 ---
+\subsection{T-10, Ambos grupos detectan de forma independiente}
+
+Esta prueba se valida automáticamente si T-07 y T-08 se superan en la misma sesión de grabación, confirmando que los dos grupos de frecuencia (canales SDR distintos, frecuencias distintas) operan de forma completamente independiente.
+
+\begin{tcolorbox}[colback=gray!5, colframe=deyposcolor, title=Resultado esperado (T-10)]
+\textbf{PASS automático} si T-07 y T-08 se superan durante la misma ejecución de \texttt{main.py}.
+\end{tcolorbox}

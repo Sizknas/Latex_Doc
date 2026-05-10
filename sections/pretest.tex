@@ -1,0 +1,41 @@
+\section{Fase 0, Preparación del Entorno}
+
+Antes de comenzar cualquier prueba, confirme físicamente los siguientes puntos:
+
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.5} % Más espacio entre filas
+    \begin{tabularx}{\textwidth}{l X c}
+        % Aplicamos el color a la primera fila
+        \rowcolor{deyposcolor} 
+        \textbf{\textcolor{white}{\#}} & 
+        \textbf{\textcolor{white}{Elemento de Verificación}} & 
+        \textbf{\textcolor{white}{Estado}} \\ 
+        
+        0.1 & KrakenSDR alimentado y cable USB conectado a la Raspberry Pi & $\square$ \\
+        \rowcolor[gray]{0.95} % Opcional: un gris muy tenue para filas alternas
+        0.2 & Puertos SMA CH0 y CH1 conectados a antenas Iridium (1621~MHz) vía LNA & $\square$ \\
+        0.3 & Puertos SMA CH2 y CH3 conectados a antenas Inmarsat (1641~MHz) vía LNA & $\square$ \\
+        \rowcolor[gray]{0.95}
+        0.4 & LNAs con alimentación bias-tee (o DC externa, según configuración) & $\square$ \\
+        0.5 & Boya Iridium encendida y con señal GPS fija (fix) & $\square$ \\
+        \rowcolor[gray]{0.95}
+        0.6 & Boya Inmarsat encendida y con señal GPS fija (fix) & $\square$ \\
+        0.7 & Raspberry Pi en la misma red local que el portátil para acceso SSH & $\square$ \\
+        \rowcolor[gray]{0.95}
+        0.8 & Remoto de rclone para Google Drive configurado (\texttt{rclone listremotes} muestra \texttt{gdrive:}) & $\square$ \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Checklist de configuración física previa al test.}
+    \label{tab:pre_test_checklist}
+\end{table}
+
+\subsection{Verificación de Conectividad Cloud}
+
+Para asegurar que los datos de los tests se sincronizarán correctamente, ejecute el siguiente comando en la terminal de la Raspberry Pi:
+
+\begin{lstlisting}[language=bash, title=Verificación de configuración rclone]
+# Quick rclone check
+rclone listremotes
+\end{lstlisting}
+\noindent \small \textbf{Resultado esperado:} \texttt{gdrive:} aparece en la salida del comando.

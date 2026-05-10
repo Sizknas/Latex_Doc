@@ -1,0 +1,87 @@
+\section{Fase 8, Prueba de Resistencia Extendida (Opcional)}
+
+Esta fase es opcional pero \textbf{altamente recomendada}. Deje el sistema completo en funcionamiento durante 4--8 horas con ambas boyas encendidas y dentro del alcance de las antenas.
+
+Al finalizar el período de observación, verifique los siguientes indicadores:
+
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.8}
+    % Definimos dos columnas: 
+    % l = ancho natural para comandos
+    % X = el resto del ancho de la pagina para la descripcion
+    \begin{tabularx}{\textwidth}{|l X|}
+        \hline
+        \rowcolor{deyposcolor}
+        \textbf{\textcolor{white}{Comando de Verificación}} & \textbf{\textcolor{white}{Resultado Esperado}} \\
+        \texttt{ls events/*.iq | wc -l} & $\geq$ 2 archivos (al menos un evento Iridium y uno Inmarsat) \\
+        \rowcolor[gray]{0.95}
+        \texttt{journalctl -u signal-recorder ...} & $\geq$ 2 eventos registrados en el log del servicio \\
+        \texttt{tail status.log} & Todas las entradas con \texttt{Servicio: active}; ninguna con \texttt{failed} \\
+        \rowcolor[gray]{0.95}
+        Memoria RAM (\texttt{free -h}) & $<$ 500\,MB en uso (principalmente buffers de anillo) \\
+        \hline
+    \end{tabularx}
+    \caption{Criterios de aceptación para la prueba de resistencia extendida.}
+\end{table}
+
+% ============================================================
+\newpage
+\section{Resumen de Resultados}
+
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{2.0} % Espacio generoso para marcar a mano
+    % l = Fase, X = Tests, w{c}{1.2cm} = Columnas de resultado con ancho fijo
+    \begin{tabularx}{\textwidth}{l X p{1.2cm} p{1.2cm} p{1.2cm}}
+        \rowcolor{deyposcolor}
+        \textbf{\textcolor{white}{Fase}} &
+        \textbf{\textcolor{white}{Tests}} &
+        \centering\textbf{\textcolor{white}{Pass}} &
+        \centering\textbf{\textcolor{white}{Fail}} &
+        \centering\textbf{\textcolor{white}{Skip}} \tabularnewline
+        
+        0, Pre-test             & T-00.1 – T-00.8 & & & \\
+        \rowcolor[gray]{0.95}
+        1, Hardware             & T-01 – T-02     & & & \\
+        2, Tests unitarios      & T-03            & & & \\
+        \rowcolor[gray]{0.95}
+        3, Verificación RF      & T-04 – T-05     & & & \\
+        4, Detección            & T-06 – T-10     & & & \\
+        \rowcolor[gray]{0.95}
+        5, Contenido archivos   & T-11 – T-13     & & & \\
+        6, Servicio systemd     & T-14 – T-17     & & & \\
+        \rowcolor[gray]{0.95}
+        7, Sincronización       & T-18 – T-19     & & & \\
+        8, Resistencia extendida &,              & & & \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Tabla de resumen de resultados del Acceptance Test Report, Proyecto KRAKEN.}
+\end{table}
+
+% ============================================================
+\section{Modos de Fallo Comunes}
+
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.8}
+    % hsize=0.8 y 1.2 redistribuyen el ancho entre las columnas X
+    \begin{tabularx}{\textwidth}{l >{\hsize=0.8\hsize}X >{\hsize=1.2\hsize}X}
+        \rowcolor{deyposcolor}
+        \textbf{\textcolor{white}{Síntoma}} &
+        \textbf{\textcolor{white}{Causa probable}} &
+        \textbf{\textcolor{white}{Solución}} \\
+        
+        T-02 falla en dispositivo & Contención USB o conector SMA suelto & Reconectar USB; ejecutar \texttt{sudo udevadm settle} \\
+        \rowcolor[gray]{0.95}
+        T-06 \textit{``not yet ready''} & \texttt{daq\_chain} reteniendo el bus & \texttt{sudo systemctl stop daq\_chain} \\
+        T-07 no dispara & Umbral demasiado alto & Bajar \texttt{threshold\_db} (ej. 8) en \texttt{main.py} \\
+        \rowcolor[gray]{0.95}
+        T-07 falsos positivos & Interferencia de banda ancha & Subir \texttt{threshold\_db} a 15--18 o reducir BW \\
+        T-15 servicio no recupera & Límite de reinicios alcanzado & \texttt{sudo systemctl reset-failed signal-recorder} \\
+        \rowcolor[gray]{0.95}
+        T-18 no borra local & Remoto \texttt{rclone} mal nombrado & Confirmar que el remoto se llama exactamente \texttt{gdrive} \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Guía de resolución de los problemas más frecuentes durante el ATR.}
+\end{table}

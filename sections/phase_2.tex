@@ -1,0 +1,30 @@
+\section{Fase 2, Software: Suite de Tests Unitarios}
+
+\textbf{Objetivo:} Confirmar la ausencia de regresiones en la lógica del grabador (*recorder logic*) y asegurar la estabilidad de las dependencias antes de proceder con el hardware real.
+
+\subsection{T-03, Tests Unitarios}
+
+Navegue al directorio raíz del software de grabación y ejecute la suite de pruebas unitarias automatizadas:
+
+\begin{lstlisting}[language=bash]
+cd /home/kraken/Signal-Recorder
+source venv/bin/activate
+python -m pytest tests/ -v
+\end{lstlisting}
+
+\begin{tcolorbox}[
+    colback=blue!5, 
+    colframe=deyposcolor, 
+    title=Resultado esperado (T-03)
+]
+La ejecución debe finalizar con éxito mostrando el resumen de pruebas en verde:
+\vspace{0.2cm}
+\begin{center}
+    \texttt{\textbf{\textcolor{green!60!black}{46 passed}}} \texttt{in under 10 seconds.} \\
+    \texttt{\textbf{\textcolor{red!80!black}{No failures / No errors}}}
+\end{center}
+\end{tcolorbox}
+
+\begin{important}
+    \textbf{Nota crítica:} Si algún test resulta en \textit{FAILED} o \textit{ERROR}, no proceda con las fases de captura de señal. Revise el archivo \texttt{pytest.log} para identificar el módulo afectado (comúnmente relacionado con rutas de archivos o permisos de escritura).
+\end{important}

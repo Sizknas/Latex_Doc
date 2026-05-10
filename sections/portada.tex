@@ -1,0 +1,42 @@
+\begin{titlepage}
+    % Dibujo de la barra lateral
+    \begin{tikzpicture}[remember picture,overlay]
+        \fill[deyposcolor] (current page.north west) ++(1cm,0) rectangle ++(0.3cm,-\paperheight);
+    \end{tikzpicture}
+
+    \begin{flushright}
+        \vspace*{0.5cm}
+        % LOGOS
+        \includegraphics[height=3cm]{logo_deypos.png} 
+        \includegraphics[height=3cm]{ALBACORA-LOGO.jpg}
+        
+        \vspace{3cm}
+
+        % TÍTULO - Usando tamaños estándar para evitar errores
+        {\huge \textbf{Acceptance Test Report}} \\[0.5cm]
+        {\Large \textcolor{gray}{Proyecto KRAKEN}} \\
+        \vspace{1cm}
+        \color{deyposcolor}\rule{0.6\textwidth}{3pt} 
+        
+        \vspace{2.5cm}
+
+        % CUERPO DE DATOS
+        \color{black}
+        {\large
+        \textbf{Cliente:} Albacora S.A. \\
+        \textbf{Referencia:} ATR-2026-V1 \\
+        \textbf{Fecha:} \today \\
+        \textbf{Clasificación:} Confidencial
+        }
+
+        \vfill
+
+        % BLOQUE DE FIRMAS (Estilo formal)
+        \begin{tabular}{r | l}
+            \textbf{Responsable:} & Mikel Loinaz Anton \\
+            \textbf{Contacto:} & mikel.loinaz.anton@gmail.com
+        \end{tabular}
+        
+        \vspace{1.5cm}
+    \end{flushright}
+\end{titlepage}
