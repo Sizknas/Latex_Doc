@@ -1,0 +1,38 @@
+\section{Introducción}
+
+Superado con éxito el \textit{Acceptance Test Report} (ATR) del prototipo KRAKEN en laboratorio, se procedió a una campaña de campo a bordo de un buque atunero congelador en Victoria (Seychelles), Océano Índico. El objetivo de esta campaña no es validar de nuevo el equipo, sino responder a una pregunta de carácter operativo previa a la instalación del sistema definitivo:
+
+\begin{tcolorbox}[colback=deyposcolor!5, colframe=deyposcolor, title=Pregunta que responde este informe]
+Con \textbf{todos los instrumentos del buque en funcionamiento} (antenas de comunicaciones, radares, sonares, equipos de transmisión por satélite, etc.), ¿es el sistema KRAKEN capaz de \textbf{escuchar las transmisiones de las boyas pesqueras} que nos interesan, o el propio equipamiento del barco satura permanentemente las bandas y lo impide?
+\end{tcolorbox}
+
+\subsection{Qué se quiere detectar y por qué}
+
+Las boyas de localización de pesca emiten su posición vía satélite en dos constelaciones distintas, cada una en una banda de frecuencia propia:
+
+\begin{itemize}
+    \item \textbf{Iridium} (banda centrada en \SI{1621.3}{\mega\hertz}): boyas tipo \textbf{Zunibal ECO} o \textbf{Marine Instruments}, que transmiten ráfagas cortas de datos (\textit{Short Burst Data}).
+    \item \textbf{Inmarsat-C} (banda centrada en \SI{1641.5}{\mega\hertz}): boyas tipo \textbf{Satlink / CLS}.
+\end{itemize}
+
+Ambos tipos de boya son \textbf{transmisores por ráfagas}, no emisores continuos: en mar abierto envían un mensaje de posición de forma esporádica (típicamente cada hora o cada ocho horas). Son, por tanto, señales breves y poco frecuentes. El reto consiste en captar esas ráfagas pese a que el propio buque alberga, en las mismas bandas, sus propios equipos de comunicación por satélite.
+
+\subsection{Qué se registró}
+
+Durante la campaña se instaló un grabador basado en \textbf{Radio Definida por Software} (SDR: un receptor de radio cuyo procesamiento se realiza íntegramente por software). El grabador no graba de forma continua, sino que funciona \textbf{por disparo}: cuando la energía recibida en una banda supera un umbral de ruido calculado dinámicamente, el sistema guarda automáticamente una \textbf{captura de \SI{10}{\second}} de esa banda. Cada captura (en adelante, \textit{evento}) queda almacenada en un fichero \texttt{.iq} cuyo nombre codifica la constelación, la fecha, la hora y el canal receptor:
+
+\begin{center}
+\texttt{event\_<Constelación>\_<AAAAMMDD>\_<HHMMSS>\_<microseg>\_ch<N>.iq}
+\end{center}
+
+De este modo, \textbf{la hora de cada fichero es la hora en que algo cruzó el umbral de detección} en esa banda, y los huecos entre ficheros son los periodos en los que nada superó el disparo. Sobre esa base temporal se construye todo el análisis de este informe.
+
+\subsection{La idea de fondo: ventanas de silencio}
+
+Como las boyas emiten ráfagas muy breves, para captarlas no hace falta que la banda esté libre todo el tiempo: basta con que el equipamiento propio del buque \textbf{deje huecos de silencio suficientemente amplios} en los que una ráfaga de boya pueda llegar sin quedar enmascarada. La pregunta operativa se reformula así en términos medibles:
+
+\begin{quote}
+\textit{¿Transmite el equipamiento del barco de forma prácticamente continua en estas bandas, o deja ventanas silenciosas lo bastante anchas como para que un futuro detector tenga una oportunidad realista de capturar la ráfaga de una boya?}
+\end{quote}
+
+Este informe aborda \textbf{únicamente la dimensión temporal} del problema (ocupación de la banda y duración de los silencios). No modela la distancia a la boya, la potencia de transmisión ni la orientación de las antenas; estas son limitaciones conocidas y se tratan por separado en la Sección~\ref{sec:conclusiones}.

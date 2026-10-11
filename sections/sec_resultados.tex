@@ -1,0 +1,183 @@
+\section{Resultados}
+
+\subsection{Cómo leer estos datos}
+
+Todo el análisis se deriva de los nombres de los ficheros \texttt{.iq} (y su tamaño). Antes de presentar las cifras conviene fijar tres criterios de interpretación:
+
+\begin{itemize}
+    \item \textbf{Un evento = una detección.} La hora de cada fichero es la hora en que algo superó el umbral de disparo en esa banda. Los huecos entre eventos son periodos en los que nada lo superó.
+    \item \textbf{``Sin transmisión'' frente a ``grabador apagado''.} El nombre del fichero no distingue un silencio real de un periodo con el grabador parado. Para no contar tiempo de apagado como silencio, los eventos se agrupan en \textbf{sesiones} (un hueco de más de \SI{120}{\minute} inicia una sesión nueva), y \textbf{todas las estadísticas de silencio usan solo huecos internos a una sesión}. Los cortes largos entre sesiones se tratan aparte como ``grabador apagado''.
+    \item \textbf{Hora.} Las marcas de tiempo se muestran tal como quedaron registradas (la zona horaria no se guarda en el nombre; se asume el reloj de la Raspberry Pi, probablemente UTC).
+\end{itemize}
+
+\subsection{Cobertura e integridad de los datos}
+
+Se registraron \textbf{211 eventos} (421 ficheros \texttt{.iq}) entre el \textbf{29 de julio} y el \textbf{7 de agosto de 2026}. De los 10 días naturales que abarca ese periodo, \textbf{solo 6 tienen grabaciones}; los otros 4 corresponden a cortes largos (grabador apagado o trasladado), no a silencio de radio. Todos los eventos, salvo uno, se registraron correctamente con su pareja de canales. Este evento en particular se registra en la antena con amplificador, pero no en la simple, lo que sugiere que fue un evento a cierta distancia, fuera del volumen del barco, posiblemente una boya u otro barco en la cercanía. En el futuro el sistema deberá realizar comprobaciones cruzadas con el AIS para evitar indicar transmisiones de otros barcos.
+
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabularx}{0.92\textwidth}{l X}
+        \rowcolor{deyposcolor}
+        \textbf{\textcolor{white}{Concepto}} & \textbf{\textcolor{white}{Valor}} \\
+        Ficheros procesados & 421 \\
+        \rowcolor[gray]{0.95}
+        Eventos totales & 211 \ ·\ Inmarsat: 145 \ ·\ Iridium: 66 \\
+        Canales por banda & Inmarsat: ch0 + ch1 \quad Iridium: ch2 + ch4 \\
+        \rowcolor[gray]{0.95}
+        Eventos con pareja de canales & 210 de 211 (1 evento con un único canal) \\
+        Días con registro & 6 de 10 días naturales \\
+        \rowcolor[gray]{0.95}
+        Sesiones de grabación & 4 \\
+        Tamaño mediano por fichero & \SI{71.8}{\mega\byte} (captura fija de \SI{10}{\second}) \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Resumen de cobertura e integridad de la campaña.}
+\end{table}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.95\textwidth]{fig_eventos_por_dia.png}
+    \caption{Eventos detectados por día y banda. La actividad se concentra en el primer día en puerto (29 jul.) y en el tramo final de navegación (4--7 ago.); los días 31 jul.--3 ago. no tienen registro por grabador apagado.}
+    \label{fig:eventos_dia}
+\end{figure}
+
+\subsection{Sesiones de grabación}
+
+La Tabla~\ref{tab:sesiones} agrupa los eventos en sesiones. La columna \textbf{``Ocupación''} indica qué fracción de la duración de la sesión está cubierta por capturas de \SI{10}{\second}; es una cota superior de la ocupación real de la banda, ya que la ráfaga que dispara cada captura es mucho más breve que los \SI{10}{\second} grabados.
+
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabularx}{\textwidth}{c l l c c c X}
+        \rowcolor{deyposcolor}
+        \textbf{\textcolor{white}{\#}} & \textbf{\textcolor{white}{Inicio}} & \textbf{\textcolor{white}{Fin}} & \textbf{\textcolor{white}{Duración}} & \textbf{\textcolor{white}{Inm.}} & \textbf{\textcolor{white}{Irid.}} & \textbf{\textcolor{white}{Ocupación}} \\
+        1 & 29 jul. 10:50 & 29 jul. 17:10 & 6,3 h  & 77 & 23 & 4,4 \% \\
+        \rowcolor[gray]{0.95}
+        2 & 30 jul. 10:45 & 30 jul. 10:45 & 10 s   & 1  & 0  & (evento aislado) \\
+        3 & 04 ago. 14:46 & 06 ago. 03:13 & 36,5 h & 59 & 38 & 0,7 \% \\
+        \rowcolor[gray]{0.95}
+        4 & 07 ago. 01:37 & 07 ago. 07:08 & 5,5 h  & 8  & 5  & 0,7 \% \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Sesiones de grabación (ambas bandas combinadas). La ocupación es la fracción del tiempo de sesión cubierta por capturas.}
+    \label{tab:sesiones}
+\end{table}
+
+\begin{tcolorbox}[colback=deyposcolor!5, colframe=deyposcolor, title=Dato clave: ocupación de banda muy baja]
+Dentro de las sesiones de grabación reales, las capturas cubren solo entre el \textbf{0,7\,\% y el 4,4\,\%} del tiempo. Es decir, incluso contando cada ráfaga como \SI{10}{\second} completos, \textbf{la banda estuvo libre más del 95\,\% del tiempo}.
+\end{tcolorbox}
+
+Los cortes largos entre sesiones, excluidos de las estadísticas de silencio por corresponder presumiblemente a grabador apagado, son:
+
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{0.8\textwidth}{l l r}
+        \rowcolor{deyposcolor}
+        \textbf{\textcolor{white}{Último evento antes}} & \textbf{\textcolor{white}{Primer evento después}} & \textbf{\textcolor{white}{Corte}} \\
+        29 jul. 17:10 & 30 jul. 10:45 & 17,6 h \\
+        \rowcolor[gray]{0.95}
+        30 jul. 10:45 & 04 ago. 14:46 & 5,2 d \\
+        06 ago. 03:13 & 07 ago. 01:37 & 22,4 h \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Cortes superiores a \SI{120}{\minute} (interpretados como grabador apagado).}
+\end{table}
+
+\clearpage
+
+\subsection{Separación entre eventos}
+
+La Tabla~\ref{tab:separacion} resume la separación inicio-a-inicio entre eventos consecutivos de la misma banda, dentro de sesiones. La mediana es de \textbf{9,2~min} en Inmarsat y \textbf{23,6~min} en Iridium: entre dos detecciones transcurren, de forma típica, muchos minutos.
+
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabularx}{\textwidth}{X c c c c c c c}
+        \rowcolor{deyposcolor}
+        \textbf{\textcolor{white}{Banda}} & \textbf{\textcolor{white}{n}} & \textbf{\textcolor{white}{mín}} & \textbf{\textcolor{white}{P25}} & \textbf{\textcolor{white}{mediana}} & \textbf{\textcolor{white}{media}} & \textbf{\textcolor{white}{P90}} & \textbf{\textcolor{white}{máx}} \\
+        Inmarsat       & 140 & 13 s   & 2,5 min  & 9,2 min  & 17,8 min & 46,3 min & 1,8 h \\
+        \rowcolor[gray]{0.95}
+        Iridium        & 56  & 13 s   & 14,6 min & 23,6 min & 28,5 min & 65,2 min & 1,8 h \\
+        Ambas combinadas & 207 & 12 s & 2,2 min  & 11,2 min & 14,0 min & 29,2 min & 74,4 min \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Estadísticos de separación inicio-a-inicio entre eventos consecutivos (dentro de sesiones).}
+    \label{tab:separacion}
+\end{table}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.95\textwidth]{fig_separacion.png}
+    \caption{Distribución de la separación entre eventos consecutivos. La mayoría de los intervalos se reparten entre los pocos minutos y la media hora; apenas hay rachas de disparos casi continuos.}
+    \label{fig:separacion}
+\end{figure}
+
+\subsection{Ventanas de silencio y detectabilidad}
+
+Una \textbf{ventana de silencio} es el tiempo entre el fin de una captura (inicio $+\,\SI{10}{\second}$) y el inicio de la siguiente, dentro de una sesión: el intervalo durante el cual la banda estuvo libre. La Tabla~\ref{tab:umbral} indica cuántas ventanas alcanzan al menos una duración dada y cuánto tiempo acumulan.
+
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabularx}{\textwidth}{X c c c c c}
+        \rowcolor{deyposcolor}
+        \textbf{\textcolor{white}{Banda}} & \textbf{\textcolor{white}{$\geq$ 1 min}} & \textbf{\textcolor{white}{$\geq$ 5 min}} & \textbf{\textcolor{white}{$\geq$ 10 min}} & \textbf{\textcolor{white}{$\geq$ 30 min}} & \textbf{\textcolor{white}{$\geq$ 1 h}} \\
+        Inmarsat & 117 vent. · 41,0 h & 91 · 39,9 h & 68 · 36,9 h & 21 · 22,0 h & 9 · 12,7 h \\
+        \rowcolor[gray]{0.95}
+        Iridium  & 50 vent. · 26,4 h  & 48 · 26,3 h & 45 · 25,9 h & 14 · 14,7 h & 6 · 9,1 h \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Ventanas de silencio por umbral de duración: número de ventanas y tiempo total acumulado.}
+    \label{tab:umbral}
+\end{table}
+
+La Figura~\ref{fig:detect} traduce lo anterior en una \textbf{curva de detectabilidad}: para cada duración del eje horizontal, indica qué porcentaje de las ventanas de silencio dura \textit{al menos} eso. Una lectura de ``80\,\% a los 10~min'' significa que el 80\,\% de los silencios de esa banda duran 10 minutos o más, es decir, que una ráfaga de boya que llegase en un momento cualquiera encontraría muy probablemente la banda despejada durante ese tiempo.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.95\textwidth]{fig_detectabilidad.png}
+    \caption{Curva de detectabilidad: porcentaje de ventanas de silencio de al menos la duración indicada. Iridium (banda de las boyas Zunibal ECO) mantiene silencios notablemente más largos que Inmarsat.}
+    \label{fig:detect}
+\end{figure}
+
+Las lecturas más relevantes de la curva son:
+
+\begin{itemize}
+    \item \textbf{Iridium (boyas Zunibal ECO):} el \textbf{89\,\%} de los silencios duran $\geq$\,1~min, el \textbf{80\,\%} duran $\geq$\,10~min y el \textbf{25\,\%} superan los 30~min.
+    \item \textbf{Inmarsat (boyas Satlink):} el \textbf{84\,\%} de los silencios duran $\geq$\,1~min, el \textbf{49\,\%} duran $\geq$\,10~min y el \textbf{15\,\%} superan los 30~min.
+\end{itemize}
+
+La banda Iridium, que es la de las boyas Zunibal ECO, es la que ofrece ventanas más amplias. Las ventanas de silencio más largas observadas en cada banda se recogen en la Tabla~\ref{tab:largas}.
+
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{X l l c}
+        \rowcolor{deyposcolor}
+        \textbf{\textcolor{white}{Banda}} & \textbf{\textcolor{white}{Desde}} & \textbf{\textcolor{white}{Hasta}} & \textbf{\textcolor{white}{Silencio}} \\
+        Inmarsat & 05 ago. 00:07 & 05 ago. 01:56 & 1,8 h \\
+        \rowcolor[gray]{0.95}
+        Inmarsat & 05 ago. 23:08 & 06 ago. 00:52 & 1,7 h \\
+        Iridium  & 07 ago. 02:29 & 07 ago. 04:19 & 1,8 h \\
+        \rowcolor[gray]{0.95}
+        Iridium  & 05 ago. 01:32 & 05 ago. 03:12 & 1,7 h \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Ventanas de silencio más largas registradas dentro de sesión (muestra).}
+    \label{tab:largas}
+\end{table}
+
+\subsection{Patrón horario y coincidencia entre bandas}
+
+La Figura~\ref{fig:hora} reparte los eventos por hora del día. Con solo 6 días de registro el patrón es indicativo, pero no se aprecia ninguna hora en la que la banda quede sistemáticamente saturada; hay una mayor actividad durante el medio día, y algo menor durante la noche, con huecos en todas las franjas.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.95\textwidth]{fig_hora_del_dia.png}
+    \caption{Eventos por hora del día (hora registrada). Patrón indicativo dado el número limitado de días.}
+    \label{fig:hora}
+\end{figure}
+
+Por último, las dos bandas operan de forma esencialmente \textbf{independiente}: solo \textbf{7 de los 66} eventos de Iridium (11\,\%) ocurren dentro de los 60~s de un evento de Inmarsat, y la distancia mediana de un evento de Iridium al evento de Inmarsat más cercano es de 18,6~min. No existe, por tanto, un emisor único que bloquee ambas bandas a la vez.

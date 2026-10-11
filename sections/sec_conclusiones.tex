@@ -1,0 +1,45 @@
+\section{Conclusiones}
+\label{sec:conclusiones}
+
+\subsection{Respuesta a la pregunta de la campaña}
+
+La campaña se planteó para responder a una pregunta concreta: con todo el equipamiento del buque en funcionamiento, ¿deja el entorno electromagnético ventanas suficientes para captar la ráfaga de una boya? Los datos temporales responden con claridad:
+
+\begin{tcolorbox}[colback=deyposcolor!5, colframe=deyposcolor, title=Conclusión principal]
+\textbf{Sí. El equipamiento propio del buque no ocupa las bandas de forma continua.} Dentro de las sesiones de grabación, la banda estuvo libre más del \textbf{95\,\%} del tiempo, y los silencios son amplios: en Iridium (boyas Zunibal ECO) el \textbf{80\,\%} de las ventanas de silencio superan los 10~minutos, y en Inmarsat (boyas Satlink) prácticamente la \textbf{mitad}. Dado que las ráfagas de las boyas son muy breves (segundos), \textbf{un futuro detector tiene una oportunidad realista de capturarlas} en los huecos que deja el tráfico propio del barco.
+\end{tcolorbox}
+
+Los tres argumentos que sostienen esta conclusión son:
+
+\begin{enumerate}
+    \item \textbf{Ocupación baja.} La fracción de tiempo con la banda ocupada es del 0,7--4,4\,\% (Tabla~\ref{tab:sesiones}), y es además una cota superior, porque cada ráfaga real es mucho más corta que los \SI{10}{\second} de captura con que se contabiliza.
+    \item \textbf{Silencios amplios.} La separación mediana entre eventos es de 9,2~min (Inmarsat) y 23,6~min (Iridium), y la mayoría de las ventanas de silencio duran minutos o decenas de minutos (Tabla~\ref{tab:umbral}, Figura~\ref{fig:detect}).
+    \item \textbf{Sin saturación sistemática.} No hay una hora del día ni un emisor único que bloquee las bandas de forma permanente; las dos constelaciones son independientes entre sí.
+\end{enumerate}
+
+\subsection{Limitaciones no resueltas en este informe}
+
+Este informe caracteriza \textbf{únicamente la dimensión temporal} del problema: cuánto y cuándo está ocupada la banda. La detección efectiva de una boya concreta depende además de factores que \textbf{no se modelan aquí} y que constituyen limitaciones conocidas, a abordar por separado:
+
+\begin{itemize}
+    \item \textbf{Distancia a la boya:} la atenuación con la distancia no se evalúa en esta campaña.
+    \item \textbf{Potencia de transmisión:} no se caracteriza el nivel real emitido por cada tipo de boya.
+    \item \textbf{Orientación y ganancia de antena:} el diagrama de radiación y el apuntamiento de las antenas instaladas no se analizan.
+\end{itemize}
+
+Que la banda esté libre es condición \textbf{necesaria} para la detección, pero no \textbf{suficiente}: una ráfaga que llegue en una ventana de silencio solo se captará si además llega con nivel suficiente sobre el ruido. Este informe demuestra que la primera condición (banda libre) se cumple con holgura.
+
+\subsection{Advertencias sobre los datos}
+
+Para una lectura correcta de las cifras anteriores conviene tener presente:
+
+\begin{itemize}
+    \item \textbf{Marcas de tiempo:} se usan tal como quedaron registradas; la zona horaria no se almacena en el nombre del fichero y se asume el reloj del sistema (probablemente UTC), sin confirmar.
+    \item \textbf{Duración de captura:} fijada en \SI{10}{\second} por la configuración del grabador, no medida sobre la duración real de cada ráfaga.
+    \item \textbf{Cobertura parcial:} solo 6 de los 10 días naturales tienen grabaciones. Los cortes largos se han interpretado como \textit{grabador apagado} y se han excluido de las estadísticas de silencio; de haberlos contado como silencio, las ventanas disponibles serían aún mayores (la conclusión no cambiaría de sentido).
+    \item \textbf{Naturaleza del silencio:} ``silencio'' significa que nada cruzó el umbral de disparo; no descarta la presencia de portadoras débiles continuas por debajo de ese umbral, que no afectarían a la detección de una ráfaga claramente por encima del ruido.
+\end{itemize}
+
+\subsection{Futuros Pasos}
+
+A la vista de los resultados, la siguiente fase del proyecto se ha iniciado. En esta siguiente fase se va a intentar, en entorno de laboratorio, es decir no en barco, grabar las transmisiones de las boyas con mucha claridad e intentar desencriptar las señales. De esta manera se obtendria la posicion de las boyas, ya que siempre es uno de los paquetes de información enviados. Consiguiendo una precision mayor y evitando desarrollo costoso en tiempo y material con el objetivo de la triangulación.

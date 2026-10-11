@@ -1,0 +1,79 @@
+\section{Instalación}
+
+\subsection{Equipo instalado}
+
+El grabador se compone de \textbf{cuatro receptores RTL-SDR}, repartidos en dos por banda. En cada banda, uno de los receptores incorpora un \textbf{amplificador de bajo ruido} (LNA) y el otro no, de modo que cada evento queda registrado por una \textbf{pareja de canales}:
+
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{0.9\textwidth}{l l l X}
+        \rowcolor{deyposcolor}
+        \textbf{\textcolor{white}{Banda}} & \textbf{\textcolor{white}{Frecuencia}} & \textbf{\textcolor{white}{Canales}} & \textbf{\textcolor{white}{Boya objetivo}} \\
+        Inmarsat-C & \SI{1641.5}{\mega\hertz} & ch0 + ch1 & Satlink / CLS \\
+        \rowcolor[gray]{0.95}
+        Iridium    & \SI{1621.3}{\mega\hertz} & ch2 + ch4 & Zunibal ECO (SBD) \\
+        \bottomrule
+    \end{tabularx}
+    \caption{Reparto de bandas, canales receptores y boya objetivo de cada constelación.}
+\end{table}
+
+El conjunto SDR + LNA se alojó en una envolvente estanca, alimentada desde la red del buque, y se conectó a antenas instaladas en el exterior. La Figura~\ref{fig:montaje} muestra el montaje definitivo del equipo (caja de receptores con sus latiguillos y caja de LNAs), y la Figura~\ref{fig:interior} su ubicación a bordo, integrada en las bandejas de cableado existentes del buque.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.62\textwidth]{montaje_definitivo.jpeg}
+    \caption{Montaje definitivo del grabador: caja de receptores RTL-SDR con los latiguillos de antena (arriba) y caja estanca con los amplificadores de bajo ruido (abajo).}
+    \label{fig:montaje}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.78\textwidth]{instalacion_interior.jpeg}
+    \caption{Ubicación del equipo a bordo, integrado junto al cableado y la alimentación existentes del buque.}
+    \label{fig:interior}
+\end{figure}
+
+\clearpage
+
+\subsection{Antenas y entorno electromagnético}
+
+Las antenas receptoras se situaron en la superestructura del buque, en un entorno densamente poblado de equipamiento propio: antenas de comunicaciones, radar, aparejo y cableado (Figura~\ref{fig:exterior}). Este es precisamente el escenario que motiva la campaña: el equipo KRAKEN debe convivir con todos esos emisores. Además, el propio buque transportaba a bordo un gran número de boyas pesqueras (Figura~\ref{fig:boyas}), que también constituyen fuentes de señal en las bandas de interés.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.74\textwidth]{Instalacion_exterior.jpeg}
+    \caption{Entorno exterior de instalación de las antenas: superestructura del buque con su aparejo, antenas y cableado propios.}
+    \label{fig:exterior}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.60\textwidth]{boyas_abordo.jpeg}
+    \caption{Boyas pesqueras estibadas en cubierta. Constituyen fuentes de señal adicionales en las bandas Iridium e Inmarsat durante la campaña.}
+    \label{fig:boyas}
+\end{figure}
+
+\clearpage
+
+\subsection{Configuración de grabación y verificación en puerto}
+
+El grabador se configuró con los siguientes parámetros, fijos durante toda la campaña:
+
+\begin{itemize}
+    \item \textbf{Modo de grabación:} por disparo sobre umbral de ruido dinámico (no continuo).
+    \item \textbf{Duración de captura:} \SI{10}{\second} fijos por evento, fijados por la configuración del grabador.
+    \item \textbf{Frecuencia de muestreo:} \SI{1.5}{\mega\hertz} nominal por receptor (valor visible en la verificación en puerto).
+    \item \textbf{Cadencia mínima entre eventos:} periodo de enfriamiento de \SI{10}{\second} por banda, heredado de la validación del ATR.
+\end{itemize}
+
+Antes de dejar el sistema en autónomo se verificó en puerto la correcta recepción en ambas bandas mediante el analizador de espectro en tiempo real de KrakenSDR. La Figura~\ref{fig:espectro} muestra la banda Inmarsat (\SI{1641.5}{\mega\hertz}, canal CH0, ganancia \SI{40}{\decibel}): el espectro y la cascada confirman que la cadena de recepción (antena, LNA y SDR) capta señal útil en la banda objetivo.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.85\textwidth]{retransmisiones_en_puerto.jpeg}
+    \caption{Verificación de recepción en puerto con el analizador de espectro en tiempo real de KrakenSDR, sintonizado a la banda Inmarsat (\SI{1641.5}{\mega\hertz}). Se observan espectro y cascada con señal por encima del ruido de fondo.}
+    \label{fig:espectro}
+\end{figure}
+
+Una vez que se comprobo el correcto funcionamiento del sistema, este se apagó y se dejaron instrucciones al patrón para encender el dispositivo una vez que el barco estuviese en mar abierto. El objetivo de esta manera de proceder era evitar señales adicionales de otros dispositivos en el puerto, otros barcos o comunicaciones terrestres, que pudiesen interferir con el sistema de grabación.
